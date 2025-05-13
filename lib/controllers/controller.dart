@@ -46,44 +46,66 @@ class SQLController extends GetxController {
 
   List<Todo> todoList = [];
   void getAllData() async{
+    todoList = [];
     var result = await db.query('todo');
     for(var i in result){
       todoList.add(Todo.fromJson(i));
     }
-    debugPrint(result.length.toString());
-    debugPrint(result.toString());
     update();
   }
 
-  void insertData() async{
-    var insertedData = await db.insert('todo', {
-      'title': 'title',
-      'description': 'description',
-      'time': '10',
-      'favorite': 0,
-      'completed': 0
-    });
-    debugPrint("$insertedData data inserted");
-    getAllData();
+  void insertData({
+    required String title,
+    required String description,
+    required String time,
+  }) async{
+    try{
+      var insertedData = await db.insert('todo', {
+        'title': title,
+        'description': description,
+        'time': time,
+        'favorite': 0,
+        'completed': 0
+      });
+      Get.back();
+      debugPrint("$insertedData data inserted");
+      getAllData();
+    }catch(e){
+      debugPrint(e.toString());
+    }
   }
 
-  void updateData() async{
-    var updatedData = await db.update(
-      'todo',
-      {
-        'title': 'play',
-        'description': 'go get food',
-        'time': '10',
-        'favorite': 1,
-        'completed': 1
-      },
-      where: 'id = ${1}',
-    );
-    debugPrint(updatedData.toString());
+  bool updateTaskData = false;
+  void updateData({
+    required String title,
+    required String description,
+    required String time,
+    required int id
+  }) async{
+    try{
+      var updatedData = await db.update(
+        'todo',
+        {
+          'title': title,
+          'description': description,
+          'time': time,
+          'favorite': 1,
+          'completed': 1
+        },
+        where: 'id = $id',
+      );
+      debugPrint(updatedData.toString());
+      Get.back();
+      getAllData();
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
   }
 
-  void deleteData() async{
-    var deletedData = await db.delete('todo', where: 'id = ${1}');
+  void deleteData({required int id}) async{
+    var deletedData = await db.delete('todo', where: 'id = $id');
     debugPrint(deletedData.toString());
+    getAllData();
   }
 }
