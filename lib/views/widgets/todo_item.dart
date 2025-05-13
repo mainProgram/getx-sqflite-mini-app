@@ -43,6 +43,18 @@ class TodoItem extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: (){
+                        controller.updateFavorite(
+                            id: controller.todoList[index].id,
+                            favorite: controller.todoList[index].favorite
+                        );
+                      },
+                      icon: Icon(
+                        Icons.favorite,
+                        color: (controller.todoList[index].favorite == 1) ? Colors.pink : Colors.grey,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: (){
                         controller.updateTaskData = true;
                         Get.to(() => EditScreen(
                             id: controller.todoList[index].id,

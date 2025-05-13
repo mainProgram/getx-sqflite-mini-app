@@ -89,8 +89,6 @@ class SQLController extends GetxController {
           'title': title,
           'description': description,
           'time': time,
-          'favorite': 1,
-          'completed': 1
         },
         where: 'id = $id',
       );
@@ -107,5 +105,26 @@ class SQLController extends GetxController {
     var deletedData = await db.delete('todo', where: 'id = $id');
     debugPrint(deletedData.toString());
     getAllData();
+  }
+
+  void updateFavorite({
+    required int favorite,
+    required int id
+  }) async{
+    try{
+      var updatedData = await db.update(
+        'todo',
+        {
+          'favorite': favorite == 0 ? 1 : 0,
+        },
+        where: 'id = $id',
+      );
+      debugPrint(updatedData.toString());
+      Get.back();
+      getAllData();
+    }
+    catch(e){
+      debugPrint(e.toString());
+    }
   }
 }
